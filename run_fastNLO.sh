@@ -3,32 +3,40 @@
 PDFunc="L6"
 
 Nybins=4
-
 datadirtag="fnl6362"
 #datadirtag="fnl6362b"
 datadir="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04.${datadirtag}"
 
 declare -a Oarr=("NLO" "NNLO")
-#declare -a Oarr=("NNLO")
 NOs=${#Oarr[@]}
 echo "NOs=$NOs"
 
 gridver="3"
+### DEBUG
 #gridver="0"
+### DEBUG
 echo "grids.v${gridver}"
 
 declare -a scalearr=("kScale1" "kProd")
+###DEBUG
 #declare -a scalearr=("kProd")
+###DEBUG
 Nscales=${#scalearr[@]}
 echo "Nscale=$Nscales"
 
 
 #nnlo pdfs --> use NNLO grid file(s)
 declare -a nnlopdfarr=("CT14nnlo" "NNPDF30_nnlo_as_0121" "NNPDF31_nnlo_as_0108" "NNPDF31_nnlo_as_0110" "NNPDF31_nnlo_as_0112" "NNPDF31_nnlo_as_0114" "NNPDF31_nnlo_as_0116" "NNPDF31_nnlo_as_0117" "NNPDF31_nnlo_as_0118" "NNPDF31_nnlo_as_0119" "NNPDF31_nnlo_as_0120" "NNPDF31_nnlo_as_0122" "NNPDF31_nnlo_as_0124")
+### DEBUG
+#declare -a nnlopdfarr=("CT14nnlo")
+### DEBUG
 Nnnlopdfs=${#nnlopdfarr[@]}
 
 #nlo pdfs --> use NLO grid file(s)
 declare -a nlopdfarr=("CT14nlo" "NNPDF30_nlo_as_0121" "NNPDF31_nlo_as_0116" "NNPDF31_nlo_as_0118" "NNPDF31_nlo_as_0120")
+### DEBUG
+#declare -a nlopdfarr=("CT14nlo")
+### DEBUG
 Nnlopdfs=${#nlopdfarr[@]}
 
 #Npdfs=${#pdfarr[@]}
@@ -36,22 +44,22 @@ Nnlopdfs=${#nlopdfarr[@]}
 
 for (( i=0; i<${Nscales}; i++ ));
 do
-    echo "i=$i"
-    echo "now doing scale=${scalearr[i]}"
     
     for (( k=0; k<${NOs}; k++ ));
     do	
 	order=${Oarr[k]}
-	echo "for order=$order"
 	
 	if [[ "$order" == "NLO" ]]
 	then
 	    
 	    for (( j=0; j<${Nnlopdfs}; j++ )); #loop over nlopdfarr
 	    do	    
-		echo "for nlopdf=${nlopdfarr[j]}"
 		for (( ybin=0; ybin<Nybins; ybin++ ));
 		do
+		    echo "i=$i"
+		    echo "now doing scale=${scalearr[i]}"
+		    echo "for order=$order"		
+		    echo "for nlopdf=${nlopdfarr[j]}"
 		    echo "ybin=${ybin}, running fnlo-tk-rootout"
 		    
  	            #make new file
@@ -71,9 +79,12 @@ do
 	    #loop over nnlopdfarr
 	    for (( j=0; j<${Nnnlopdfs}; j++ ));
 	    do
-		echo "for nnlopdf=${nnlopdfarr[j]}"
 		for (( ybin=0; ybin<Nybins; ybin++ ));
 		do
+		    echo "i=$i"
+		    echo "now doing scale=${scalearr[i]}"
+		    echo "for order=$order"		
+		    echo "for nnlopdf=${nnlopdfarr[j]}"
 		    echo "ybin=${ybin}, running fnlo-tk-rootout"
 	            #make new file
     		    fnlo-tk-rootout ${datadir}/grids.v${gridver}/1jet.NNLO.${datadirtag}_y${ybin}_ptjet.tab ${nnlopdfarr[j]} ${PDFunc} _ _ ${scalearr[i]}
