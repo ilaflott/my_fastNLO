@@ -25,7 +25,9 @@
 #include "TLine.h"
 #include "TLegend.h"
 
-#include "fNLO_Klaus_relstatunc.h"
+//#include "fNLO_Klaus_relstatunc_fnl6362_gridsv2.h"
+#include "fNLO_Klaus_relstatunc_fnl6362_gridsv3.h"
+//#include "fNLO_Klaus_relstatunc_fnl6362b_gridsv0.h"
 const bool debugMode=true;
 
 const int NFILES=4;
@@ -129,29 +131,30 @@ void assignCorrectStatErrs(std::string filename, int NORDERS){
 void combineNLOandNNLORootFiles(std::string ERRTYPE="L6",			       
 				std::string VER="2",			       
 				std::string SCALE="kProd",
-				std::string PDF="CT14"
+				std::string PDF="CT14",
+				std::string DIRTAG="fnl6362"
 				){
   
   if(PDF.find("nnlo")==std::string::npos){
     std::cout<<"ERROR! PDF input="<<PDF<<". must be an nnlo PDF!"<<std::endl;
     return; }
-    
+  
   std::cout<<std::endl<<"----- running combineNLOandNNLORootFiles -----"<<std::endl;
   int NORDERS=3;//gonna loop over each object in the NNLO hist --> 3 orders
     
-  std::string outfilename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04.fnl6362/grids.v"+VER+"/1jet.NNLO.fnl6362_"+SCALE+"_"+PDF+"_"+ERRTYPE+"_TEST.root";
+  std::string outfilename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04."+DIRTAG+"/grids.v"+VER+"/1jet.NNLO."+DIRTAG+"_"+SCALE+"_"+PDF+"_"+ERRTYPE+"_TEST.root";
   if(debugMode)std::cout<<"now opening output file: "<<outfilename<<std::endl;  
   TFile* fout=TFile::Open( (outfilename).c_str(), "RECREATE");
   
   std::string nnloPDF=PDF;
-  std::string NNLOfilename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04.fnl6362/grids.v"+VER+"/1jet.NNLO.fnl6362_"+SCALE+"_"+nnloPDF+"_"+ERRTYPE+".root";
+  std::string NNLOfilename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04."+DIRTAG+"/grids.v"+VER+"/1jet.NNLO."+DIRTAG+"_"+SCALE+"_"+nnloPDF+"_"+ERRTYPE+".root";
   if(debugMode)std::cout<<"opening NNLO file "<<NNLOfilename<<std::endl;
   TFile* NNLOfin=TFile::Open( (NNLOfilename).c_str(), "READ");
   
   std::string nloPDF=PDF;
   nloPDF.replace( nloPDF.find("nnlo"),4,"nlo");
   std::cout<<"nloPDF="<<nloPDF<<std::endl;
-  std::string NLOfilename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04.fnl6362/grids.v"+VER+"/1jet.NLO.fnl6362_"+SCALE+"_"+nloPDF+"_"+ERRTYPE+".root";
+  std::string NLOfilename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04."+DIRTAG+"/grids.v"+VER+"/1jet.NLO."+DIRTAG+"_"+SCALE+"_"+nloPDF+"_"+ERRTYPE+".root";
   if(debugMode)std::cout<<"opening NLO file "<<NLOfilename<<std::endl;
   TFile* NLOfin=TFile::Open( (NLOfilename).c_str(), "READ");
   
@@ -228,7 +231,8 @@ void combineRootFiles(std::string FILEORDER="NNLO",
 		      std::string ERRTYPE="L6",			       
 		      std::string VER="2",			       
 		      std::string SCALE="kProd",
-		      std::string PDF="CT14nnlo"
+		      std::string PDF="CT14nnlo",
+		      std::string DIRTAG="fnl6362"
 		      ){
   
   std::cout<<std::endl<<"----- running combineRootFiles -----"<<std::endl;
@@ -240,14 +244,14 @@ void combineRootFiles(std::string FILEORDER="NNLO",
   else return;
   
   
-  std::string outfilename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04.fnl6362/grids.v"+VER+"/1jet."+FILEORDER+".fnl6362_"+SCALE+"_"+PDF+"_"+ERRTYPE+".root";
+  std::string outfilename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04."+DIRTAG+"/grids.v"+VER+"/1jet."+FILEORDER+"."+DIRTAG+"_"+SCALE+"_"+PDF+"_"+ERRTYPE+".root";
   if(debugMode)std::cout<<"now opening output file: "<<outfilename<<std::endl;  
   TFile* fout=TFile::Open( (outfilename).c_str(), "RECREATE");
   
   //return;
   
   for(int i=0; i<NFILES; i++){//loop over files, basically loop over |y| bins
-    std::string filename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04.fnl6362/grids.v"+VER+"/1jet."+FILEORDER+".fnl6362_"+SCALE+"_y";//"0_CT14nnlo_HC.root"
+    std::string filename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04."+DIRTAG+"/grids.v"+VER+"/1jet."+FILEORDER+"."+DIRTAG+"_"+SCALE+"_y";//"0_CT14nnlo_HC.root"
     filename+=std::to_string(i)+"_"+PDF+"_"+ERRTYPE+".root";
     if(debugMode)std::cout<<"opening file "<<filename<<std::endl;
     
@@ -566,19 +570,21 @@ void analyze_fastNLO_output(   std::string FILEORDER="NNLO",
 			       //std::string SCALE="kProd",
 			       std::string SCALE="kScale1",
 			       //			       std::string PDF="CT14nnlo"){
-			       std::string PDF="NNPDF31_nnlo_as_0116"){
+			       std::string PDF="NNPDF31_nnlo_as_0116",
+			       std::string DIRTAG="fnl6362"){
 			       //			       std::string PDF="NNPDF31_nnlo_as_0118"){
 			       //			       std::string PDF="NNPDF31_nnlo_as_0120"){
 //			       std::string PDF="NNPDF30_nnlo_as_0121"){
-  std::cout<<std::endl<<"################# ----- running analyze_fastNLO_output ----- #################"<<std::endl;
-  
-  //combineRootFiles(FILEORDER, ERRTYPE, VER, SCALE, PDF);  //run this immediately after fnlo-tk-rootout is done with it's job for all |y| bins for given inputs; puts results from all |y| bins into one file
-  
-  //this now works for CT14 only! gotta figure out how to make it make sense for NNPDF...
-  combineNLOandNNLORootFiles(ERRTYPE, VER, SCALE, PDF); // run this after NLO and NNLO combined files have been created; this combines NNLO using an nnlo PDF with the NLO using an nlo pdf into one file.
-  
+  std::cout<<std::endl<<"################# ----- running analyze_fastNLO_output ----- #################"<<std::endl;  
 
-  //DEPRECATED
+  //run this immediately after fnlo-tk-rootout is done with it's job for all |y| bins for given inputs; puts results from all |y| bins into one file
+  combineRootFiles(FILEORDER, ERRTYPE, VER, SCALE, PDF, DIRTAG);  
+  
+  // run this after NLO and NNLO combined files have been created; this combines NNLO using an nnlo PDF with the NLO using an nlo pdf into one file.
+  //combineNLOandNNLORootFiles(ERRTYPE, VER, SCALE, PDF, DIRTAG); 
+  
+  
+  // Don't use me unless you have to debug something. 
   //compareSpectra_joao     (FILEORDER, ERRTYPE, VER , SCALE, PDF); //compare all spectra in one of the fast NLO outputs to output from Joao  
   //compareSpectra_scales   (ERRTYPE, FILEORDER,  VER   );//compare all spectra in two ROOT files across scale choice
   //compareSpectra_gridVer  (ERRTYPE, FILEORDER,  SCALE );  //compare all spectra in two ROOT files across grid version
