@@ -26,8 +26,8 @@
 #include "TLegend.h"
 
 //#include "fNLO_Klaus_relstatunc_fnl6362_gridsv2.h"
-#include "fNLO_Klaus_relstatunc_fnl6362_gridsv3.h"
-//#include "fNLO_Klaus_relstatunc_fnl6362b_gridsv0.h"
+//#include "fNLO_Klaus_relstatunc_fnl6362_gridsv3.h"
+#include "fNLO_Klaus_relstatunc_fnl6362b_gridsv0.h"
 const bool debugMode=true;
 
 const int NFILES=4;
@@ -99,6 +99,8 @@ void assignCorrectStatErrs(std::string filename, int NORDERS){
       
       const int nbinsx=h_xsec->GetNbinsX();
       if(nbinsx!=nbinsx_relstatunc){
+	std::cout<<"h_xsec->GetNbinsX()="<<nbinsx<<std::endl;
+	std::cout<<"nbinsx_relstatunc  ="<<nbinsx_relstatunc<<std::endl;
 	std::cout<<"ERROR: # of pT bins according to stat unc array is different than # of pT bins in the histogram! Skipping."<<std::endl;
 	continue;      }
       
@@ -131,34 +133,39 @@ void assignCorrectStatErrs(std::string filename, int NORDERS){
 void combineNLOandNNLORootFiles(std::string ERRTYPE="L6",			       
 				std::string VER="2",			       
 				std::string SCALE="kProd",
-				std::string PDF="CT14",
+				std::string PDF="CT14nlo",
 				std::string DIRTAG="fnl6362"
 				){
   
-  if(PDF.find("nnlo")==std::string::npos){
-    std::cout<<"ERROR! PDF input="<<PDF<<". must be an nnlo PDF!"<<std::endl;
-    return; }
+  //  if(PDF.find("nnlo")==std::string::npos){
+  //    std::cout<<"ERROR! PDF input="<<PDF<<". must be an nnlo PDF!"<<std::endl;
+  //    return; }
+  if(PDF.find("nnlo")!=std::string::npos){
+    std::cout<<"error: only give me an nlo PDF, not an nnlo one."<<std::endl; return;}
   
   std::cout<<std::endl<<"----- running combineNLOandNNLORootFiles -----"<<std::endl;
   int NORDERS=3;//gonna loop over each object in the NNLO hist --> 3 orders
-    
-  std::string outfilename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04."+DIRTAG+"/grids.v"+VER+"/1jet.NNLO."+DIRTAG+"_"+SCALE+"_"+PDF+"_"+ERRTYPE+"_TEST.root";
-  if(debugMode)std::cout<<"now opening output file: "<<outfilename<<std::endl;  
-  TFile* fout=TFile::Open( (outfilename).c_str(), "RECREATE");
-  
-  std::string nnloPDF=PDF;
-  std::string NNLOfilename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04."+DIRTAG+"/grids.v"+VER+"/1jet.NNLO."+DIRTAG+"_"+SCALE+"_"+nnloPDF+"_"+ERRTYPE+".root";
-  if(debugMode)std::cout<<"opening NNLO file "<<NNLOfilename<<std::endl;
-  TFile* NNLOfin=TFile::Open( (NNLOfilename).c_str(), "READ");
   
   std::string nloPDF=PDF;
-  nloPDF.replace( nloPDF.find("nnlo"),4,"nlo");
   std::cout<<"nloPDF="<<nloPDF<<std::endl;
   std::string NLOfilename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04."+DIRTAG+"/grids.v"+VER+"/1jet.NLO."+DIRTAG+"_"+SCALE+"_"+nloPDF+"_"+ERRTYPE+".root";
   if(debugMode)std::cout<<"opening NLO file "<<NLOfilename<<std::endl;
   TFile* NLOfin=TFile::Open( (NLOfilename).c_str(), "READ");
   
-   for(int j=0; j<NORDERS; j++){    
+  std::string nnloPDF=PDF;
+  nnloPDF.replace( nnloPDF.find("nlo"),3,"nnlo"); 
+  std::cout<<"nnloPDF="<<nloPDF<<std::endl;
+  std::string NNLOfilename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04."+DIRTAG+"/grids.v"+VER+"/1jet.NNLO."+DIRTAG+"_"+SCALE+"_"+nnloPDF+"_"+ERRTYPE+".root";
+  if(debugMode)std::cout<<"opening NNLO file "<<NNLOfilename<<std::endl;
+  TFile* NNLOfin=TFile::Open( (NNLOfilename).c_str(), "READ");
+  
+  std::string outfilename="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04."+DIRTAG+"/grids.v"+VER+"/1jet.NNLO."+DIRTAG+"_"+SCALE+"_"+nnloPDF+"_"+ERRTYPE+"_TEST.root";
+  if(debugMode)std::cout<<"now opening output file: "<<outfilename<<std::endl;  
+  TFile* fout=TFile::Open( (outfilename).c_str(), "RECREATE");
+  
+
+  
+  for(int j=0; j<NORDERS; j++){    
     for(int i=0; i<NYBINS; i++){    
       for(int k=0; k<NHISTS; k++){//loop over hist names
 	
@@ -571,17 +578,21 @@ void analyze_fastNLO_output(   std::string FILEORDER="NNLO",
 			       std::string SCALE="kScale1",
 			       //			       std::string PDF="CT14nnlo"){
 			       std::string PDF="NNPDF31_nnlo_as_0116",
-			       std::string DIRTAG="fnl6362"){
-			       //			       std::string PDF="NNPDF31_nnlo_as_0118"){
-			       //			       std::string PDF="NNPDF31_nnlo_as_0120"){
-//			       std::string PDF="NNPDF30_nnlo_as_0121"){
-  std::cout<<std::endl<<"################# ----- running analyze_fastNLO_output ----- #################"<<std::endl;  
-
-  //run this immediately after fnlo-tk-rootout is done with it's job for all |y| bins for given inputs; puts results from all |y| bins into one file
-  combineRootFiles(FILEORDER, ERRTYPE, VER, SCALE, PDF, DIRTAG);  
+			       std::string DIRTAG="fnl6362",
+			       bool combineNLOandNNLOfiles=false){
   
-  // run this after NLO and NNLO combined files have been created; this combines NNLO using an nnlo PDF with the NLO using an nlo pdf into one file.
-  //combineNLOandNNLORootFiles(ERRTYPE, VER, SCALE, PDF, DIRTAG); 
+  std::cout<<std::endl<<"################# ----- running analyze_fastNLO_output ----- #################"<<std::endl<<std::endl;  
+  
+  if(!combineNLOandNNLOfiles){
+    //run this immediately after fnlo-tk-rootout is done with it's job for all |y| bins for given inputs; puts results from all |y| bins into one file
+    std::cout<<std::endl<<"################# ----- running combineRootFiles ----- #################"<<std::endl;  
+    combineRootFiles(FILEORDER, ERRTYPE, VER, SCALE, PDF, DIRTAG);  
+  }
+  else{
+    // run this after NLO and NNLO combined files have been created; this combines NNLO using an nnlo PDF with the NLO using an nlo pdf into one file.
+    std::cout<<std::endl<<"----- running combineNLOandNNLORootFiles -----"<<std::endl;  
+    combineNLOandNNLORootFiles(ERRTYPE, VER, SCALE, PDF, DIRTAG); 
+  }
   
   
   // Don't use me unless you have to debug something. 

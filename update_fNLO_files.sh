@@ -1,8 +1,12 @@
 #!/bin/bash
 
-fromdir="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04.fnl6362/grids.v2"
+fromdir="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04.fnl6362/grids.v3"
 todir="/Users/ilaflott/Working/CERNbox/SEMIFINAL_RESULTS/NLOSpectra_NPCs/fNLOJetsSpectra/R04"
 scptodir="/home/ilaflott/5p02TeV_ppJetAnalysis/CMSSW_7_5_8/src/doAnalysis/doUnfolding/smearTheory/fNLOJetsSpectra/R04"
+
+#fromdir="fastnlo_toolkit-2.3.1-2753/data/1jet.CMS5-ak04.fnl6362b/grids.v0"
+#todir="/Users/ilaflott/Working/CERNbox/SEMIFINAL_RESULTS/NLOSpectra_NPCs/fNLOJetsSpectra/R04"
+#scptodir="/home/ilaflott/5p02TeV_ppJetAnalysis/CMSSW_7_5_8/src/doAnalysis/doUnfolding/smearTheory/fNLOJetsSpectra/R04"
 
 ##for the NNPDF31's that aren't used to the smeared NLO unfolding, only their NNLO hist is valid, and their NLO hist should not be used.
 #cp ${fromdir}/1jet.NNLO.fnl6362_kProd_NNPDF31_nnlo_as_0108_L6.root      ${todir}/fout_NNPDF31_nnlo_as_0108_murmufHTp_v4.root
