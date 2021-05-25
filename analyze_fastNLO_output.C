@@ -2,14 +2,6 @@
 #include <cstring>
 #include <cassert>
 #include <iostream>
-//#include <cmath>
-//#include <fstream>
-//#include <sstream>
-//#include <utility>
-//#include <algorithm>
-//#include <vector>
-//#include <sys/stat.h>
-//#include <unistd.h>
 
 #include "TROOT.h"
 #include "TSystem.h"
@@ -27,7 +19,8 @@
 
 //#include "fNLO_Klaus_relstatunc_fnl6362_gridsv2.h"
 //#include "fNLO_Klaus_relstatunc_fnl6362_gridsv3.h"
-#include "fNLO_Klaus_relstatunc_fnl6362b_gridsv0.h"
+//#include "fNLO_Klaus_relstatunc_fnl6362b_gridsv0.h"
+#include "fNLO_Klaus_relstatunc_fnl6362b_gridsv1.h"
 const bool debugMode=true;
 
 const int NFILES=4;
@@ -555,7 +548,6 @@ void compareSpectra_joao   (std::string FILEORDER, std::string ERRTYPE, std::str
   }  
   
   canv->Print((foutname+".pdf]").c_str());
-  //if(debugMode)fout->ls();
   fout->Close();
   fjoao->Close();
   fNLO->Close();
@@ -563,20 +555,11 @@ void compareSpectra_joao   (std::string FILEORDER, std::string ERRTYPE, std::str
 }
 
 
-// void compareSpectra_scales   (std::string ERRTYPE, std::string, std::string){ return;}
-// void compareSpectra_gridVer  (std::string ERRTYPE, std::string, std::string){ return;}
-// void compareSpectra_fileOrder(std::string ERRTYPE, std::string, std::string){ return;}
 
-//for NNLO we have
-//"CT14nnlo" "NNPDF30_nnlo_as_0121" "NNPDF31_nnlo_as_0120" "NNPDF31_nnlo_as_0122"
-//for NLO we have
-//"CT14nlo" "NNPDF30_nlo_as_0121" "NNPDF31_nlo_as_0120"
 void analyze_fastNLO_output(   std::string FILEORDER="NNLO", 		       
 			       std::string ERRTYPE="L6",			       
 			       std::string VER="2",			       
-			       //std::string SCALE="kProd",
 			       std::string SCALE="kScale1",
-			       //			       std::string PDF="CT14nnlo"){
 			       std::string PDF="NNPDF31_nnlo_as_0116",
 			       std::string DIRTAG="fnl6362",
 			       bool combineNLOandNNLOfiles=false){
@@ -586,6 +569,13 @@ void analyze_fastNLO_output(   std::string FILEORDER="NNLO",
   if(!combineNLOandNNLOfiles){
     //run this immediately after fnlo-tk-rootout is done with it's job for all |y| bins for given inputs; puts results from all |y| bins into one file
     std::cout<<std::endl<<"################# ----- running combineRootFiles ----- #################"<<std::endl;  
+    if(VER!=FOR_GRIDVER || DIRTAG!=FOR_DATADIRTAG){
+      std::cout<<"ERROR! grid version and dirtag are mis-matched to those listed in stat uncertainty header!"<<std::endl;
+      std::cout<<"arguments (VER, DIRTAG) = ("<<VER<<", "<<DIRTAG<<")"<<std::endl;
+      std::cout<<"in header (VER, DIRTAG) = ("<<FOR_GRIDVER<<", "<<FOR_DATADIRTAG<<")"<<std::endl;
+      std::cout<<"exiting. DEBUG ME"<<std::endl;
+      return;
+    }
     combineRootFiles(FILEORDER, ERRTYPE, VER, SCALE, PDF, DIRTAG);  
   }
   else{
@@ -595,8 +585,10 @@ void analyze_fastNLO_output(   std::string FILEORDER="NNLO",
   }
   
   
-  // Don't use me unless you have to debug something. 
+  // Old. Don't use me unless you have to debug something. 
   //compareSpectra_joao     (FILEORDER, ERRTYPE, VER , SCALE, PDF); //compare all spectra in one of the fast NLO outputs to output from Joao  
+
+  // was going to make these comparisons once upon a time, but our needs at this point don't require it i think.
   //compareSpectra_scales   (ERRTYPE, FILEORDER,  VER   );//compare all spectra in two ROOT files across scale choice
   //compareSpectra_gridVer  (ERRTYPE, FILEORDER,  SCALE );  //compare all spectra in two ROOT files across grid version
   //compareSpectra_fileOrder(ERRTYPE,       VER,  SCALE );  //compare all spectra in two ROOT files across NLO/NNLO files
@@ -604,3 +596,5 @@ void analyze_fastNLO_output(   std::string FILEORDER="NNLO",
   
   return;
 }
+
+

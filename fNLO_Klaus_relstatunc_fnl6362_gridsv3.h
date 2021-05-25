@@ -1,5 +1,8 @@
 //these stat uncertainties are in units of %. when computing the errors, don't forget to divide the values by 100!
 
+const std::string FOR_DATADIRTAG="fnl6362";
+const std::string FOR_GRIDVER="3";
+
 std::vector<std::vector<double>> relstatunc_NLO={
 {
 0.0442888,
